@@ -24,11 +24,7 @@ Insurance Bot is an intelligent recommendation system that helps users find the 
 - **Natural Language Processing**: Advanced chat interface using LangChain
 - **Real-time Premium Calculation**: Instant cost estimates
 - **Policy Explanation**: AI-generated simple explanations of complex terms
-
-### 📊 Data Visualization
-- Interactive dashboards
-- Premium comparison charts
-- Coverage analysis graphs
+- 
 
 ## 🛠 Technology Stack <a name="technology-stack"></a>
 
@@ -237,8 +233,7 @@ The application should now be running on `http://localhost:3000`.
 This project demonstrates several practical applications for the insurance industry:
 
 1.  **24/7 Customer Support:** Provide instant, automated support to customers, reducing call center volume and improving user satisfaction.
-2.  **Fraud Detection Aid:** Analyze user queries and data points in real-time to flag potentially fraudulent claims for review.
-3.  **Personalized Policy Recommendations:** Analyze user data to suggest relevant insurance products or coverage upgrades.
+2.  **Personalized Policy Recommendations:** Analyze user data to suggest relevant insurance products or coverage upgrades.
 
 ## 🤝 Contributing
 
