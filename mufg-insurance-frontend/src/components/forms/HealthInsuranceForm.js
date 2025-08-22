@@ -1,6 +1,8 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { useParams } from 'react-router-dom';
+import { useCurrency } from '../../context/CurrencyContext';
 import {
   Box,
   Button,
@@ -37,26 +39,26 @@ const diseases = [
   'Others'
 ];
 
-const validationSchema = Yup.object({
+const HealthInsuranceForm = () => {
+  const navigate = useNavigate();
+  const { countryCode } = useParams();
+  const { currency } = useCurrency();
+
+const getValidationSchema = (currency) => Yup.object({
   age: Yup.number()
     .required('Age is required')
     .min(18, 'Must be at least 18 years old')
     .max(100, 'Must be less than 100 years old'),
   sum_assured: Yup.number()
     .required('Sum assured is required')
-    .min(100000, 'Minimum sum assured should be ₹1,00,000'),
+    .min(100000, `Minimum sum assured should be ${currency.symbol}1,00,000`),
   smoker_drinker: Yup.string()
     .required('Please specify smoking/drinking habits'),
   diseases: Yup.array()
     .min(1, 'Please select at least one option')
     .of(Yup.string())
     .required('Please select any pre-existing conditions'),
-});
-
-const HealthInsuranceForm = () => {
-  const navigate = useNavigate();
-
-  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
+});  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
     try {
       const formattedValues = {
         ...values,
@@ -65,7 +67,7 @@ const HealthInsuranceForm = () => {
         diseases: values.diseases.filter(d => d !== 'None' || values.diseases.length === 1),
       };
 
-      const recommendations = await insuranceService.getRecommendations('HEALTH', 'INDIA', formattedValues);
+      const recommendations = await insuranceService.getRecommendations('HEALTH', countryCode, formattedValues);
       
       if (recommendations.prediction) {
         navigate('/results', { 
@@ -100,7 +102,7 @@ const HealthInsuranceForm = () => {
           smoker_drinker: 'no',
           diseases: ['None'],
         }}
-        validationSchema={validationSchema}
+        validationSchema={getValidationSchema(currency)}
         onSubmit={handleSubmit}
       >
         {({ values, errors, touched, handleChange, handleBlur, isSubmitting, status }) => (
@@ -124,7 +126,7 @@ const HealthInsuranceForm = () => {
                 fullWidth
                 id="sum_assured"
                 name="sum_assured"
-                label="Sum Assured (₹)"
+                label={`Sum Assured (${currency.symbol})`}
                 type="number"
                 value={values.sum_assured}
                 onChange={handleChange}

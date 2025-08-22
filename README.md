@@ -1,36 +1,9 @@
 # 🤖 Insurance Bot - AI-Powered Insurance Recommendation System
 
-![Project Banner](path_to_banner_image.png)
-*Add a banner image showcasing your project's interface*
+## 📝 Overview
+Insurance Bot is an intelligent recommendation system that helps users find the most suitable insurance policies based on their profile and requirements. The system supports multiple insurance types across different countries, leveraging machine learning and natural language processing to provide personalized recommendations with clear explanations.
 
-## 📝 Table of Contents
-- [Demo](#demo)
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [Architecture](#architecture)
-- [Setup and Installation](#setup-and-installation)
-- [Usage Guide](#usage-guide)
-- [API Documentation](#api-documentation)
-- [Team](#team)
 
-## 🎥 Demo <a name="demo"></a>
-
-[![Project Demo](path_to_thumbnail.png)](your_youtube_link_here)
-
-*Add your project demo video link here*
-
-### 📸 Screenshots
-
-<table>
-  <tr>
-    <td><img src="path_to_screenshot1.png" alt="Home Page" width="100%"/></td>
-    <td><img src="path_to_screenshot2.png" alt="Insurance Form" width="100%"/></td>
-  </tr>
-  <tr>
-    <td><img src="path_to_screenshot3.png" alt="Chat Interface" width="100%"/></td>
-    <td><img src="path_to_screenshot4.png" alt="Results Page" width="100%"/></td>
-  </tr>
-</table>
 
 ## ✨ Features <a name="features"></a>
 
@@ -59,39 +32,29 @@
 
 ## 🛠 Technology Stack <a name="technology-stack"></a>
 
-### Backend Technologies
-- **Python 3.9**
-- **FastAPI**: High-performance web framework
-- **LangChain**: For AI/ML operations
-- **Neo4j**: Graph database for complex insurance relationships
-- **ChromaDB**: Vector database for semantic search
-- **scikit-learn & PyTorch**: For ML models
-- **Pandas & NumPy**: Data processing
-- **Docker**: Containerization
+### Backend (FastAPI)
+- **Python + FastAPI**: High-performance API backend
+- **scikit-learn**: ML model training and inference
+- **LangChain**: Natural language processing and explanations
+- **ChromaDB**: Vector storage for RAG capabilities
+- **Pydantic**: Data validation and settings management
 
-### Frontend Technologies
-- **React.js**: UI framework
+### Frontend (React)
+- **React**: Modern UI framework
 - **Material-UI**: Component library
-- **Chart.js**: Data visualization
+- **React Router**: Navigation and routing
 - **Axios**: API integration
-
-### DevOps & Tools
-- **Docker & Docker Compose**: Containerization
-- **GitHub Actions**: CI/CD
-- **Nginx**: Web server
-- **Gunicorn**: WSGI server
 
 ## 🏗 Architecture <a name="architecture"></a>
 
 ```mermaid
 graph TD
-    A[Client] --> B[Nginx Reverse Proxy]
-    B --> C[React Frontend]
-    B --> D[FastAPI Backend]
-    D --> E[ML Models]
-    D --> F[Neo4j Database]
-    D --> G[ChromaDB]
-    D --> H[LangChain]
+    A[React Frontend] --> B[FastAPI Backend]
+    B --> C[ML Models]
+    B --> D[LangChain]
+    D --> E[ChromaDB Vector Store]
+    C --> F[Policy Recommendations]
+    D --> F
 ```
 
 ## 🚀 Setup and Installation <a name="setup-and-installation"></a>
@@ -149,29 +112,59 @@ npm start
 4. **Get Recommendations**: Receive AI-powered insurance suggestions
 5. **Chat for Details**: Use the chat interface for specific queries
 
-## 📚 API Documentation <a name="api-documentation"></a>
+## 📚 API Documentation
 
-Detailed API documentation is available at `/docs` endpoint. Key endpoints include:
+The API provides the following main endpoint:
 
-- `POST /recommend`: Get insurance recommendations
-- `POST /chat`: Interact with AI assistant
-- `GET /policies`: List available policies
-- `POST /calculate-premium`: Get premium estimates
+### POST /recommend
+Get insurance policy recommendations with explanations
 
-## 👥 Team <a name="team"></a>
+**Request Body:**
+```json
+{
+    "country": "india|australia",
+    "policy": "health|life|travel|house|vehicle",
+    "data": {
+        // User profile and requirements data
+    }
+}
+```
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="path_to_team_member1.jpg" width="100px;" alt="Team Member 1"/>
-      <br />
-      <b>Team Member 1</b>
-      <br />
-      Role
-    </td>
-    <!-- Add more team members similarly -->
-  </tr>
-</table>
+**Response:**
+```json
+{
+    "country": "string",
+    "policy": "string",
+    "recommendation": {
+        // Policy recommendations
+    },
+    "explanations": {
+        // Natural language explanations
+    }
+}
+```
+
+Full API documentation is available at `/docs` when running the server.
+
+## 🔧 Project Structure
+
+```
+├── app.py                 # FastAPI application
+├── requirements.txt       # Python dependencies
+├── artifacts/            # ML model artifacts
+│   ├── india_*/         # India models
+│   └── australia_*/     # Australia models
+├── scripts/
+│   ├── api/             # API utilities
+│   ├── llm/             # LLM integration
+│   ├── preprocessing/   # Data preprocessing
+│   ├── rag/            # RAG implementation
+│   └── recommendation/  # ML prediction logic
+├── mufg-insurance-frontend/
+│   ├── src/            # React source code
+│   └── public/         # Static assets
+└── vectorstore/        # ChromaDB storage
+```
 
 ## � License
 
@@ -227,22 +220,8 @@ You need to run both the backend and frontend servers simultaneously.
 
 The application should now be running on `http://localhost:3000`.
 
-## 🤖 Usage
 
-Interact with the chatbot using natural language. Here are some example queries and the expected types of responses:
 
-**1. Ask for policy details:**
-> **You:** "What are the details of my auto insurance policy?"
-> **Bot:** "Your auto insurance policy (ID: `POL45678`) covers comprehensive and collision damage with a deductible of $500. Your next premium payment of $120 is due on September 1, 2025."
-
-**2. Check a claim's status:**
-> **You:** "What is the status of my claim #CLM12345?"
-> **Bot:** "Your claim #CLM12345 for water damage is currently under review. An adjuster has been assigned, and you can expect an update within 3-5 business days."
-
-**3. Update a real-time dashboard:**
-> **You:** "Show me the distribution of claims by category for this month."
-> **Bot:** "Certainly. I have updated the dashboard to show the claim distribution for the current month."
-> *(The dashboard embedded in the UI will update instantly)*
 
 ## 💻 Tech Stack
 
@@ -258,9 +237,8 @@ Interact with the chatbot using natural language. Here are some example queries 
 This project demonstrates several practical applications for the insurance industry:
 
 1.  **24/7 Customer Support:** Provide instant, automated support to customers, reducing call center volume and improving user satisfaction.
-2.  **Instant First Notice of Loss (FNOL):** Allow users to initiate a claim directly through the chatbot, speeding up the claims process.
-3.  **Fraud Detection Aid:** Analyze user queries and data points in real-time to flag potentially fraudulent claims for review.
-4.  **Personalized Policy Recommendations:** Analyze user data to suggest relevant insurance products or coverage upgrades.
+2.  **Fraud Detection Aid:** Analyze user queries and data points in real-time to flag potentially fraudulent claims for review.
+3.  **Personalized Policy Recommendations:** Analyze user data to suggest relevant insurance products or coverage upgrades.
 
 ## 🤝 Contributing
 

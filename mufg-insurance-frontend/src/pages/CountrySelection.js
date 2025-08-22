@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Container, Typography, Button, Grid, Card, CardContent } from '@mui/material';
+import { useCurrency } from '../context/CurrencyContext';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import PublicIcon from '@mui/icons-material/Public';
@@ -19,6 +20,7 @@ const countries = [
 
 const CountrySelection = () => {
   const navigate = useNavigate();
+  const { updateCurrency } = useCurrency();
 
   return (
     <Box
@@ -65,7 +67,10 @@ const CountrySelection = () => {
                       boxShadow: '0px 8px 24px rgba(0,0,0,0.1)',
                     },
                   }}
-                  onClick={() => navigate(`/insurance-selection/${country.code}`)}
+                  onClick={() => {
+                    updateCurrency(country.code);
+                    navigate(`/insurance-selection/${country.code}`);
+                  }}
                 >
                   <CardContent>
                     <Typography variant="h1" align="center" sx={{ fontSize: '5rem', mb: 2 }}>
