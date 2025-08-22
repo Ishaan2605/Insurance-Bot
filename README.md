@@ -1,92 +1,187 @@
-# Insurance Bot
+# 🤖 Insurance Bot - AI-Powered Insurance Recommendation System
 
-An intelligent insurance recommendation system that provides personalized insurance policy suggestions based on user profiles and requirements.
+![Project Banner](path_to_banner_image.png)
+*Add a banner image showcasing your project's interface*
 
-## Features
+## 📝 Table of Contents
+- [Demo](#demo)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Architecture](#architecture)
+- [Setup and Installation](#setup-and-installation)
+- [Usage Guide](#usage-guide)
+- [API Documentation](#api-documentation)
+- [Team](#team)
 
-- Multi-country support (India and Australia)
-- Multiple insurance types:
-  - Health Insurance
-  - Life Insurance
-  - Travel Insurance
-  - House Insurance
-  - Vehicle Insurance
-- ML-powered recommendation engine
-- Interactive chat interface
-- Real-time premium calculation
-- Comprehensive policy explanations
+## 🎥 Demo <a name="demo"></a>
 
-## Tech Stack
+[![Project Demo](path_to_thumbnail.png)](your_youtube_link_here)
 
-### Backend
-- Python 3.9
-- FastAPI
-- Scikit-learn
-- PyTorch
-- LangChain
-- Neo4j
-- ChromaDB
+*Add your project demo video link here*
 
-### Frontend
-- React
-- Material-UI
-- Axios
+### 📸 Screenshots
 
-### Infrastructure
-- Docker
-- Docker Compose
-- Nginx
-- Gunicorn
+<table>
+  <tr>
+    <td><img src="path_to_screenshot1.png" alt="Home Page" width="100%"/></td>
+    <td><img src="path_to_screenshot2.png" alt="Insurance Form" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="path_to_screenshot3.png" alt="Chat Interface" width="100%"/></td>
+    <td><img src="path_to_screenshot4.png" alt="Results Page" width="100%"/></td>
+  </tr>
+</table>
 
-A cutting-edge, AI-powered chatbot designed to revolutionize the insurance industry. This project, built for a hackathon, provides real-time policy information, claim status updates, and dynamic data visualization through an intuitive conversational interface powered by the Groq API.
+## ✨ Features <a name="features"></a>
 
-## ✨ Features
+### 🌍 Multi-Country Support
+- **India & Australia Coverage**
+- Region-specific policy recommendations
+- Currency and regulation compliance
 
--   💬 **Conversational AI:** Interact with a powerful Large Language Model (LLM) hosted on Groq for lightning-fast, natural language responses.
--   📊 **Real-Time Dashboard:** A dynamic dashboard that updates instantly based on user queries and backend data changes.
--   🔍 **Policy & Claim Inquiries:** Instantly retrieve details about insurance policies, check the status of claims, and get answers to frequently asked questions.
--   ⚙️ **Scalable Architecture:** Built with a modern tech stack featuring a React frontend and a robust Node.js backend.
--   🚀 **Optimized for Performance:** Utilizes model quantization to ensure any custom machine learning models are lightweight and fast, enabling free and easy deployment.
+### 🎯 Insurance Types
+- 🏥 Health Insurance
+- 💖 Life Insurance
+- ✈️ Travel Insurance
+- 🏠 House Insurance
+- 🚗 Vehicle Insurance
 
-## 📂 Project Structure
+### 🤖 AI-Powered Features
+- **Smart Recommendations**: ML models trained on extensive insurance data
+- **Natural Language Processing**: Advanced chat interface using LangChain
+- **Real-time Premium Calculation**: Instant cost estimates
+- **Policy Explanation**: AI-generated simple explanations of complex terms
 
-The project is organized into two main parts: a `frontend` directory for the React application and a `backend` directory for the Node.js server.
+### 📊 Data Visualization
+- Interactive dashboards
+- Premium comparison charts
+- Coverage analysis graphs
 
--   **`Insurance-Bot/`**
-    -   **`backend/`**
-        -   `node_modules/`
-        -   `models/` - Contains quantized machine learning models (if any)
-        -   `routes/` - API routes for handling requests
-        -   `server.js` - The main Express server file
-        -   `package.json` - Backend dependencies and scripts
-    -   **`frontend/`**
-        -   `node_modules/`
-        -   `public/` - Static assets and index.html
-        -   `src/`
-            -   `components/` - Reusable React components (chatbot UI, charts)
-            -   `App.js` - Main application component
-            -   `index.js` - Entry point for the React app
-        -   `package.json` - Frontend dependencies and scripts
-    -   `README.md` - You are here!
+## 🛠 Technology Stack <a name="technology-stack"></a>
 
--   **`backend`**: Handles the core logic, API requests, WebSocket connections for real-time updates, and integration with the Groq API and any connected databases.
--   **`frontend`**: Contains the user interface built with React, including the chatbot window and data visualization components that render information from the backend.
+### Backend Technologies
+- **Python 3.9**
+- **FastAPI**: High-performance web framework
+- **LangChain**: For AI/ML operations
+- **Neo4j**: Graph database for complex insurance relationships
+- **ChromaDB**: Vector database for semantic search
+- **scikit-learn & PyTorch**: For ML models
+- **Pandas & NumPy**: Data processing
+- **Docker**: Containerization
 
+### Frontend Technologies
+- **React.js**: UI framework
+- **Material-UI**: Component library
+- **Chart.js**: Data visualization
+- **Axios**: API integration
 
-## 🛠️ Installation & Setup
+### DevOps & Tools
+- **Docker & Docker Compose**: Containerization
+- **GitHub Actions**: CI/CD
+- **Nginx**: Web server
+- **Gunicorn**: WSGI server
 
-Follow these steps to get the project running on your local machine.
+## 🏗 Architecture <a name="architecture"></a>
+
+```mermaid
+graph TD
+    A[Client] --> B[Nginx Reverse Proxy]
+    B --> C[React Frontend]
+    B --> D[FastAPI Backend]
+    D --> E[ML Models]
+    D --> F[Neo4j Database]
+    D --> G[ChromaDB]
+    D --> H[LangChain]
+```
+
+## 🚀 Setup and Installation <a name="setup-and-installation"></a>
 
 ### Prerequisites
+- Docker and Docker Compose
+- Git
 
--   [Node.js](https://nodejs.org/) (v18 or later)
--   [npm](https://www.npmjs.com/)
--   A Groq API Key (get one from [console.groq.com](https://console.groq.com/))
+### Quick Start
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Ishaan2605/Insurance-Bot.git
+   cd Insurance-Bot
+   ```
 
-### 1. Clone the Repository
+2. Start with Docker Compose:
+   ```bash
+   docker-compose up --build
+   ```
 
-git clone https://github.com/your-username/Insurance-Bot.git
-cd Insurance-Bot
+3. Access the application:
+   - Frontend: http://localhost:80
+   - Backend API: http://localhost:8000
+   - API Docs: http://localhost:8000/docs
+
+### Manual Setup (Development)
+
+#### Backend Setup
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# OR
+.\\venv\\Scripts\\activate  # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the server
+uvicorn app:app --reload --port 8000
+```
+
+#### Frontend Setup
+```bash
+cd mufg-insurance-frontend
+npm install
+npm start
+```
+
+## � Usage Guide <a name="usage-guide"></a>
+
+1. **Select Country**: Choose between India and Australia
+2. **Choose Insurance Type**: Select from Health, Life, Travel, House, or Vehicle insurance
+3. **Fill Details**: Provide required information
+4. **Get Recommendations**: Receive AI-powered insurance suggestions
+5. **Chat for Details**: Use the chat interface for specific queries
+
+## 📚 API Documentation <a name="api-documentation"></a>
+
+Detailed API documentation is available at `/docs` endpoint. Key endpoints include:
+
+- `POST /recommend`: Get insurance recommendations
+- `POST /chat`: Interact with AI assistant
+- `GET /policies`: List available policies
+- `POST /calculate-premium`: Get premium estimates
+
+## 👥 Team <a name="team"></a>
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="path_to_team_member1.jpg" width="100px;" alt="Team Member 1"/>
+      <br />
+      <b>Team Member 1</b>
+      <br />
+      Role
+    </td>
+    <!-- Add more team members similarly -->
+  </tr>
+</table>
+
+## � License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  Made with ❤️ by Team Insurance Bot
+</p>
 
 
 
