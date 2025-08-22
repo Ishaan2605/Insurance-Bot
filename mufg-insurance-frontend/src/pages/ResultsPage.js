@@ -76,20 +76,13 @@ const ResultsPage = () => {
           </List>
         </Box>
 
-        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
           <Button
             variant="outlined"
             color="primary"
             onClick={() => navigate('/')}
           >
             Back to Home
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate(`/${insuranceType}`)}
-          >
-            Try Different Options
           </Button>
         </Box>
       </Paper>
