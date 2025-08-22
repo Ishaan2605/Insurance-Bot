@@ -1,7 +1,15 @@
 # Environment variables
 .env
+.env.production
 scripts/rag/.env.rag
 .venv
+.venv39/
+
+# Deployment scripts
+deploy.sh
+deploy_to_ec2.ps1
+deploy_to_ec2.sh
+test_api.ps1
 
 # Python
 __pycache__/
