@@ -11,6 +11,7 @@ import {
   Button,
   Divider,
 } from '@mui/material';
+import { useCurrency } from '../context/CurrencyContext';
 import { styled } from '@mui/material/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -40,10 +41,11 @@ const ConfidenceChip = styled(Chip)(({ theme, confidence }) => ({
   color: theme.palette.common.white,
 }));
 
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('en-IN', {
+const formatPrice = (price, currencyCode = 'INR') => {
+  const locale = currencyCode === 'AUD' ? 'en-AU' : 'en-IN';
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: 'INR',
+    currency: currencyCode,
     maximumFractionDigits: 0
   }).format(price);
 };
@@ -60,6 +62,7 @@ const getInsuranceIcon = (policyType) => {
 };
 
 const TierCard = ({ tier, price, isRecommended, explanation, confidence }) => {
+  const { currency } = useCurrency();
   return (
     <StyledCard isRecommended={isRecommended}>
       <CardContent>
@@ -77,7 +80,7 @@ const TierCard = ({ tier, price, isRecommended, explanation, confidence }) => {
           )}
         </Box>
         <PriceTag>
-          {formatPrice(price)}
+          {formatPrice(price, currency.code)}
         </PriceTag>
         {confidence > 0 && (
           <ConfidenceChip
@@ -94,6 +97,30 @@ const TierCard = ({ tier, price, isRecommended, explanation, confidence }) => {
 };
 
 const RecommendationDisplay = ({ recommendations }) => {
+  const { currency, updateCurrency } = useCurrency();
+  const pathParts = window.location.pathname.split('/');
+  const countryCode = pathParts[2]?.toUpperCase();
+  const insuranceType = pathParts[3]?.toLowerCase();
+
+  // Update currency based on URL if needed
+  React.useEffect(() => {
+    if (countryCode === 'AU') {
+      updateCurrency('AU');
+      // Store insurance type in localStorage
+      localStorage.setItem('insuranceType', insuranceType);
+    } else if (countryCode === 'IN') {
+      updateCurrency('IN');
+      localStorage.setItem('insuranceType', insuranceType);
+    }
+  }, [countryCode, insuranceType, updateCurrency]);
+
+  // Force currency to be AUD for Australian insurance types
+  React.useEffect(() => {
+    if (countryCode === 'AU') {
+      updateCurrency('AU');
+    }
+  }, [recommendations, countryCode, updateCurrency]);
+
   if (!recommendations) {
     return (
       <Alert severity="info" sx={{ mt: 4 }}>
@@ -117,7 +144,7 @@ const RecommendationDisplay = ({ recommendations }) => {
           {recommendationsList.length > 1 && (
             <Typography variant="h5" mb={2}>
               Recommendation {index + 1}
-              {getInsuranceIcon(rec.prediction?.policy_type)}
+              {getInsuranceIcon(rec.prediction?.policytype)}
             </Typography>
           )}
 

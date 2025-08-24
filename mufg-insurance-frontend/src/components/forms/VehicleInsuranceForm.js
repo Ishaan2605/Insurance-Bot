@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { useCurrency } from '../../context/CurrencyContext';
 import {
   Box,
   Button,
@@ -19,32 +20,42 @@ const vehicleTypes = [
   'Luxury'
 ];
 
-const validationSchema = Yup.object({
+const getValidationSchema = (currency) => Yup.object({
   age: Yup.number()
     .required('Age is required')
     .min(18, 'Must be at least 18 years old')
     .max(100, 'Must be less than 100 years old'),
-  price_of_vehicle: Yup.number()
+  priceofvehicle: Yup.number()
     .required('Vehicle price is required')
-    .min(10000, 'Minimum vehicle price should be ₹10,000'),
-  age_of_vehicle: Yup.number()
+    .min(10000, `Minimum vehicle price should be ${currency.symbol}10,000`),
+  ageofvehicle: Yup.number()
     .required('Vehicle age is required')
     .min(0, 'Vehicle age cannot be negative')
     .max(25, 'Vehicle age cannot exceed 25 years'),
-  type_of_vehicle: Yup.string()
+  typeofvehicle: Yup.string()
     .required('Vehicle type is required'),
 });
 
 const VehicleInsuranceForm = () => {
   const navigate = useNavigate();
+  const { currency } = useCurrency();
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
+      // Map vehicle types to backend expected values
+      const vehicleTypeMap = {
+        'car': 'car',
+        'three wheeler': '2wheeler',
+        'bike': '2wheeler',
+        'truck': 'commercial',
+        'luxury': 'suv'
+      };
+
       const recommendations = await insuranceService.getRecommendations('vehicle', 'IN', {
-        ...values,
-        priceofvehicle: values.price_of_vehicle,
-        ageofvehicle: values.age_of_vehicle,
-        typeofvehicle: values.type_of_vehicle,
+        age: values.age,
+        priceofvehicle: values.priceofvehicle,
+        ageofvehicle: values.ageofvehicle,
+        typeofvehicle: vehicleTypeMap[values.typeofvehicle] || 'car',
       });
       navigate('/results', { state: { recommendations, insuranceType: 'vehicle' } });
     } catch (error) {
@@ -63,11 +74,11 @@ const VehicleInsuranceForm = () => {
       <Formik
         initialValues={{
           age: '',
-          price_of_vehicle: '',
-          age_of_vehicle: '',
-          type_of_vehicle: '',
+          priceofvehicle: '',
+          ageofvehicle: '',
+          typeofvehicle: '',
         }}
-        validationSchema={validationSchema}
+        validationSchema={getValidationSchema(currency)}
         onSubmit={handleSubmit}
       >
         {({ values, errors, touched, handleChange, handleBlur, isSubmitting }) => (
@@ -89,43 +100,43 @@ const VehicleInsuranceForm = () => {
 
               <TextField
                 fullWidth
-                id="price_of_vehicle"
-                name="price_of_vehicle"
-                label="Vehicle Price (₹)"
+                id="priceofvehicle"
+                name="priceofvehicle"
+                label={`Vehicle Price (${currency.symbol})`}
                 type="number"
-                value={values.price_of_vehicle}
+                value={values.priceofvehicle}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.price_of_vehicle && Boolean(errors.price_of_vehicle)}
-                helperText={touched.price_of_vehicle && errors.price_of_vehicle}
+                error={touched.priceofvehicle && Boolean(errors.priceofvehicle)}
+                helperText={touched.priceofvehicle && errors.priceofvehicle}
                 sx={{ mb: 2 }}
               />
 
               <TextField
                 fullWidth
-                id="age_of_vehicle"
-                name="age_of_vehicle"
+                id="ageofvehicle"
+                name="ageofvehicle"
                 label="Vehicle Age (Years)"
                 type="number"
-                value={values.age_of_vehicle}
+                value={values.ageofvehicle}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.age_of_vehicle && Boolean(errors.age_of_vehicle)}
-                helperText={touched.age_of_vehicle && errors.age_of_vehicle}
+                error={touched.ageofvehicle && Boolean(errors.ageofvehicle)}
+                helperText={touched.ageofvehicle && errors.ageofvehicle}
                 sx={{ mb: 2 }}
               />
 
               <TextField
                 fullWidth
                 select
-                id="type_of_vehicle"
-                name="type_of_vehicle"
+                id="typeofvehicle"
+                name="typeofvehicle"
                 label="Vehicle Type"
-                value={values.type_of_vehicle}
+                value={values.typeofvehicle}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.type_of_vehicle && Boolean(errors.type_of_vehicle)}
-                helperText={touched.type_of_vehicle && errors.type_of_vehicle}
+                error={touched.typeofvehicle && Boolean(errors.typeofvehicle)}
+                helperText={touched.typeofvehicle && errors.typeofvehicle}
               >
                 {vehicleTypes.map((type) => (
                   <MenuItem key={type} value={type.toLowerCase()}>

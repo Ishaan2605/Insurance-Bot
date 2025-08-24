@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CurrencyContext = createContext();
 
@@ -16,10 +16,28 @@ export const CURRENCY_CONFIG = {
 };
 
 export const CurrencyProvider = ({ children }) => {
-  const [currency, setCurrency] = useState(CURRENCY_CONFIG.IN);
+  const [currency, setCurrency] = useState(() => {
+    // Try to get saved currency from localStorage
+    const savedCurrency = localStorage.getItem('selectedCountry');
+    const savedInsuranceType = localStorage.getItem('insuranceType');
+    
+    // If it's Australia, always return AUD
+    if (savedCurrency === 'AU') {
+      return CURRENCY_CONFIG.AU;
+    }
+    
+    // For India return INR
+    return CURRENCY_CONFIG.IN;
+  });
 
   const updateCurrency = (countryCode) => {
-    setCurrency(CURRENCY_CONFIG[countryCode]);
+    if (countryCode === 'AU') {
+      setCurrency(CURRENCY_CONFIG.AU);
+      localStorage.setItem('selectedCountry', 'AU');
+    } else {
+      setCurrency(CURRENCY_CONFIG.IN);
+      localStorage.setItem('selectedCountry', 'IN');
+    }
   };
 
   return (

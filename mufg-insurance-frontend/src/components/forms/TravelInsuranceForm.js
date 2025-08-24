@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { useCurrency } from '../../context/CurrencyContext';
 import {
   Box,
   Button,
@@ -16,50 +17,52 @@ import {
 import { useNavigate } from 'react-router-dom';
 import insuranceService from '../../services/api';
 
-const validationSchema = Yup.object({
+const getValidationSchema = (currency) => Yup.object({
   age: Yup.number()
     .required('Age is required')
     .min(18, 'Must be at least 18 years old')
     .max(100, 'Must be less than 100 years old'),
-  sum_insured: Yup.number()
-    .required('Sum insured is required')
-    .min(100000, 'Minimum sum insured should be ₹1,00,000'),
-  destination_country: Yup.string()
+  sumassured: Yup.number()
+    .required('Sum assured is required')
+    .min(100000, `Minimum sum assured should be ${currency.symbol}1,00,000`),
+  destinationcountry: Yup.string()
     .required('Destination country is required')
     .min(2, 'Please enter a valid country name'),
-  trip_duration_days: Yup.number()
+  tripdurationdays: Yup.number()
     .required('Trip duration is required')
     .min(1, 'Minimum duration is 1 day')
     .max(180, 'Maximum duration is 180 days'),
-  existing_medical_condition: Yup.string()
+  existingmedicalcondition: Yup.string()
     .required('Please specify if you have any existing medical conditions'),
-  health_coverage: Yup.string()
+  healthcoverage: Yup.string()
     .required('Please specify if you want health coverage'),
-  baggage_coverage: Yup.string()
+  baggagecoverage: Yup.string()
     .required('Please specify if you want baggage coverage'),
-  trip_cancellation_coverage: Yup.string()
+  tripcancellationcoverage: Yup.string()
     .required('Please specify if you want trip cancellation coverage'),
-  accident_coverage: Yup.string()
+  accidentcoverage: Yup.string()
     .required('Please specify if you want accident coverage'),
 });
 
 const TravelInsuranceForm = () => {
   const navigate = useNavigate();
+  const { currency } = useCurrency();
 
   const handleSubmit = async (values, { setSubmitting, setStatus }) => {
     try {
       console.log('Submitting travel insurance form with values:', values);
       
       const formattedValues = {
-        ...values,
-        destination_country: values.destination_country,
-        trip_duration_days: parseInt(values.trip_duration_days),
-        existing_medical_condition: values.existing_medical_condition === 'yes' ? 'Yes' : 'No',
-        health_coverage: values.health_coverage === 'yes' ? 'Yes' : 'No',
-        baggage_coverage: values.baggage_coverage === 'yes' ? 'Yes' : 'No',
-        trip_cancellation_coverage: values.trip_cancellation_coverage === 'yes' ? 'Yes' : 'No',
-        accident_coverage: values.accident_coverage === 'yes' ? 'Yes' : 'No',
-        sum_assured: parseFloat(values.sum_insured)  // Convert to match backend expectations
+        age: parseInt(values.age),
+        destinationcountry: values.destinationcountry,
+        tripdurationdays: parseInt(values.tripdurationdays),
+        existingmedicalcondition: values.existingmedicalcondition === 'yes' ? 'Yes' : 'No',
+        // Map coverage values to tiers
+        healthcoverage: values.healthcoverage === 'yes' ? 'Standard' : 'Basic',
+        baggagecoverage: values.baggagecoverage === 'yes' ? 'Standard' : 'Basic',
+        tripcancellationcoverage: values.tripcancellationcoverage === 'yes' ? 'Yes' : 'No',
+        accidentcoverage: values.accidentcoverage === 'yes' ? 'Standard' : 'Basic',
+        sumassured: parseFloat(values.sumassured)
       };
 
       console.log('Calling API with formatted values:', formattedValues);
@@ -116,16 +119,16 @@ const TravelInsuranceForm = () => {
       <Formik
         initialValues={{
           age: '',
-          sum_insured: '',
-          destination_country: '',
-          trip_duration_days: '',
-          existing_medical_condition: 'no',
-          health_coverage: 'yes',
-          baggage_coverage: 'yes',
-          trip_cancellation_coverage: 'yes',
-          accident_coverage: 'yes',
+          sumassured: '',
+          destinationcountry: '',
+          tripdurationdays: '',
+          existingmedicalcondition: 'no',
+          healthcoverage: 'yes',
+          baggagecoverage: 'yes',
+          tripcancellationcoverage: 'yes',
+          accidentcoverage: 'yes',
         }}
-        validationSchema={validationSchema}
+        validationSchema={getValidationSchema(currency)}
         onSubmit={handleSubmit}
       >
         {({ values, errors, touched, handleChange, handleBlur, isSubmitting, status: formStatus }) => (
@@ -153,93 +156,93 @@ const TravelInsuranceForm = () => {
 
               <TextField
                 fullWidth
-                id="sum_insured"
-                name="sum_insured"
-                label="Sum Insured (₹)"
+                id="sumassured"
+                name="sumassured"
+                label={`Sum Assured (${currency.symbol})`}
                 type="number"
-                value={values.sum_insured}
+                value={values.sumassured}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.sum_insured && Boolean(errors.sum_insured)}
-                helperText={touched.sum_insured && errors.sum_insured}
+                error={touched.sumassured && Boolean(errors.sumassured)}
+                helperText={touched.sumassured && errors.sumassured}
                 sx={{ mb: 2 }}
               />
 
               <TextField
                 fullWidth
-                id="destination_country"
-                name="destination_country"
+                id="destinationcountry"
+                name="destinationcountry"
                 label="Destination Country"
-                value={values.destination_country}
+                value={values.destinationcountry}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.destination_country && Boolean(errors.destination_country)}
-                helperText={touched.destination_country && errors.destination_country}
+                error={touched.destinationcountry && Boolean(errors.destinationcountry)}
+                helperText={touched.destinationcountry && errors.destinationcountry}
                 sx={{ mb: 2 }}
               />
 
               <TextField
                 fullWidth
-                id="trip_duration_days"
-                name="trip_duration_days"
+                id="tripdurationdays"
+                name="tripdurationdays"
                 label="Trip Duration (Days)"
                 type="number"
-                value={values.trip_duration_days}
+                value={values.tripdurationdays}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.trip_duration_days && Boolean(errors.trip_duration_days)}
-                helperText={touched.trip_duration_days && errors.trip_duration_days}
+                error={touched.tripdurationdays && Boolean(errors.tripdurationdays)}
+                helperText={touched.tripdurationdays && errors.tripdurationdays}
                 sx={{ mb: 2 }}
               />
 
               <RadioOption
                 label="Do you have any existing medical conditions?"
-                name="existing_medical_condition"
-                value={values.existing_medical_condition}
+                name="existingmedicalcondition"
+                value={values.existingmedicalcondition}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
-                error={errors.existing_medical_condition}
-                touched={touched.existing_medical_condition}
+                error={errors.existingmedicalcondition}
+                touched={touched.existingmedicalcondition}
               />
 
               <RadioOption
                 label="Do you want health coverage?"
-                name="health_coverage"
-                value={values.health_coverage}
+                name="healthcoverage"
+                value={values.healthcoverage}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
-                error={errors.health_coverage}
-                touched={touched.health_coverage}
+                error={errors.healthcoverage}
+                touched={touched.healthcoverage}
               />
 
               <RadioOption
                 label="Do you want baggage coverage?"
-                name="baggage_coverage"
-                value={values.baggage_coverage}
+                name="baggagecoverage"
+                value={values.baggagecoverage}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
-                error={errors.baggage_coverage}
-                touched={touched.baggage_coverage}
+                error={errors.baggagecoverage}
+                touched={touched.baggagecoverage}
               />
 
               <RadioOption
                 label="Do you want trip cancellation coverage?"
-                name="trip_cancellation_coverage"
-                value={values.trip_cancellation_coverage}
+                name="tripcancellationcoverage"
+                value={values.tripcancellationcoverage}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
-                error={errors.trip_cancellation_coverage}
-                touched={touched.trip_cancellation_coverage}
+                error={errors.tripcancellationcoverage}
+                touched={touched.tripcancellationcoverage}
               />
 
               <RadioOption
                 label="Do you want accident coverage?"
-                name="accident_coverage"
-                value={values.accident_coverage}
+                name="accidentcoverage"
+                value={values.accidentcoverage}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
-                error={errors.accident_coverage}
-                touched={touched.accident_coverage}
+                error={errors.accidentcoverage}
+                touched={touched.accidentcoverage}
               />
             </Box>
 

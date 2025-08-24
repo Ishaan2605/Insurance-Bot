@@ -49,10 +49,10 @@ const getValidationSchema = (currency) => Yup.object({
     .required('Age is required')
     .min(18, 'Must be at least 18 years old')
     .max(100, 'Must be less than 100 years old'),
-  sum_assured: Yup.number()
+  sumassured: Yup.number()
     .required('Sum assured is required')
     .min(100000, `Minimum sum assured should be ${currency.symbol}1,00,000`),
-  smoker_drinker: Yup.string()
+  smokerdrinker: Yup.string()
     .required('Please specify smoking/drinking habits'),
   diseases: Yup.array()
     .min(1, 'Please select at least one option')
@@ -61,10 +61,11 @@ const getValidationSchema = (currency) => Yup.object({
 });  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
     try {
       const formattedValues = {
-        ...values,
-        smoker_drinker: values.smoker_drinker === 'yes' ? 'Yes' : 'No',
+        age: parseInt(values.age),
+        sumassured: parseFloat(values.sumassured),
+        smokerdrinker: values.smokerdrinker === 'yes' ? 'Yes' : 'No',
         // Remove 'None' from diseases if it's selected along with other conditions
-        diseases: values.diseases.filter(d => d !== 'None' || values.diseases.length === 1),
+        diseases: values.diseases.filter(d => d !== 'None' || values.diseases.length === 1).join(','),
       };
 
       const recommendations = await insuranceService.getRecommendations('HEALTH', countryCode, formattedValues);
@@ -98,8 +99,8 @@ const getValidationSchema = (currency) => Yup.object({
       <Formik
         initialValues={{
           age: '',
-          sum_assured: '',
-          smoker_drinker: 'no',
+          sumassured: '',
+          smokerdrinker: 'no',
           diseases: ['None'],
         }}
         validationSchema={getValidationSchema(currency)}
@@ -124,23 +125,23 @@ const getValidationSchema = (currency) => Yup.object({
 
               <TextField
                 fullWidth
-                id="sum_assured"
-                name="sum_assured"
+                id="sumassured"
+                name="sumassured"
                 label={`Sum Assured (${currency.symbol})`}
                 type="number"
-                value={values.sum_assured}
+                value={values.sumassured}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.sum_assured && Boolean(errors.sum_assured)}
-                helperText={touched.sum_assured && errors.sum_assured}
+                error={touched.sumassured && Boolean(errors.sumassured)}
+                helperText={touched.sumassured && errors.sumassured}
                 sx={{ mb: 2 }}
               />
 
               <FormControl component="fieldset" sx={{ mb: 2 }}>
                 <FormLabel component="legend">Are you a smoker/drinker?</FormLabel>
                 <RadioGroup
-                  name="smoker_drinker"
-                  value={values.smoker_drinker}
+                  name="smokerdrinker"
+                  value={values.smokerdrinker}
                   onChange={handleChange}
                 >
                   <FormControlLabel value="no" control={<Radio />} label="No" />

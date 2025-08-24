@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { useCurrency } from '../../context/CurrencyContext';
 import {
   Box,
   Button,
@@ -14,43 +15,48 @@ import insuranceService from '../../services/api';
 const propertyTypes = [
   'Apartment',
   'House',
-  'Bungalow'
+  'Villa',
+  'Commercial'
 ];
 
-const validationSchema = Yup.object({
+const getValidationSchema = (currency) => Yup.object({
   age: Yup.number()
     .required('Age is required')
     .min(18, 'Must be at least 18 years old')
     .max(100, 'Must be less than 100 years old'),
   sum_insured: Yup.number()
-    .required('Sum insured is required')
-    .min(100000, 'Minimum sum insured should be ₹1,00,000'),
-  property_value: Yup.number()
-    .required('Property value is required')
-    .min(100000, 'Minimum property value should be ₹1,00,000'),
-  property_age: Yup.number()
+    .required('Sum insured is required'),
+  propertyvalue: Yup.number()
+    .required('Property value is required'),
+  propertyage: Yup.number()
     .required('Property age is required')
     .min(0, 'Property age cannot be negative')
     .max(100, 'Property age cannot exceed 100 years'),
-  property_type: Yup.string()
+  propertytype: Yup.string()
     .required('Property type is required'),
-  property_size_sq_feet: Yup.number()
+  propertysizesqfeet: Yup.number()
     .required('Property size is required')
     .min(100, 'Minimum size should be 100 sq ft'),
 });
 
 const HouseInsuranceForm = () => {
   const navigate = useNavigate();
+  const { currency } = useCurrency();
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
     try {
-      const recommendations = await insuranceService.getRecommendations('house', 'IN', {
-        ...values,
-        propertyvalue: values.property_value,
-        propertyage: values.property_age,
-        propertytype: values.property_type,
-        propertysizesqfeet: values.property_size_sq_feet,
-      });
+      // Convert values to proper types and match backend field names
+      const formattedValues = {
+        age: parseInt(values.age),
+        suminsured: parseFloat(values.sum_insured),
+        propertyvalue: parseFloat(values.propertyvalue),
+        propertyage: parseInt(values.propertyage),
+        propertytype: values.propertytype.toLowerCase(),
+        propertysizesqfeet: parseFloat(values.propertysizesqfeet),
+      };
+
+      console.log('Submitting house insurance form with values:', formattedValues);
+      const recommendations = await insuranceService.getRecommendations('house', 'IN', formattedValues);
       navigate('/results', { state: { recommendations, insuranceType: 'house' } });
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -69,12 +75,12 @@ const HouseInsuranceForm = () => {
         initialValues={{
           age: '',
           sum_insured: '',
-          property_value: '',
-          property_age: '',
-          property_type: '',
-          property_size_sq_feet: '',
+          propertyvalue: '',
+          propertyage: '',
+          propertytype: '',
+          propertysizesqfeet: '',
         }}
-        validationSchema={validationSchema}
+        validationSchema={getValidationSchema(currency)}
         onSubmit={handleSubmit}
       >
         {({ values, errors, touched, handleChange, handleBlur, isSubmitting }) => (
@@ -98,7 +104,7 @@ const HouseInsuranceForm = () => {
                 fullWidth
                 id="sum_insured"
                 name="sum_insured"
-                label="Sum Insured (₹)"
+                label={`Sum Insured (${currency.symbol})`}
                 type="number"
                 value={values.sum_insured}
                 onChange={handleChange}
@@ -110,43 +116,43 @@ const HouseInsuranceForm = () => {
 
               <TextField
                 fullWidth
-                id="property_value"
-                name="property_value"
-                label="Property Value (₹)"
+                id="propertyvalue"
+                name="propertyvalue"
+                label={`Property Value (${currency.symbol})`}
                 type="number"
-                value={values.property_value}
+                value={values.propertyvalue}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.property_value && Boolean(errors.property_value)}
-                helperText={touched.property_value && errors.property_value}
+                error={touched.propertyvalue && Boolean(errors.propertyvalue)}
+                helperText={touched.propertyvalue && errors.propertyvalue}
                 sx={{ mb: 2 }}
               />
 
               <TextField
                 fullWidth
-                id="property_age"
-                name="property_age"
+                id="propertyage"
+                name="propertyage"
                 label="Property Age (Years)"
                 type="number"
-                value={values.property_age}
+                value={values.propertyage}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.property_age && Boolean(errors.property_age)}
-                helperText={touched.property_age && errors.property_age}
+                error={touched.propertyage && Boolean(errors.propertyage)}
+                helperText={touched.propertyage && errors.propertyage}
                 sx={{ mb: 2 }}
               />
 
               <TextField
                 fullWidth
                 select
-                id="property_type"
-                name="property_type"
+                id="propertytype"
+                name="propertytype"
                 label="Property Type"
-                value={values.property_type}
+                value={values.propertytype}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.property_type && Boolean(errors.property_type)}
-                helperText={touched.property_type && errors.property_type}
+                error={touched.propertytype && Boolean(errors.propertytype)}
+                helperText={touched.propertytype && errors.propertytype}
                 sx={{ mb: 2 }}
               >
                 {propertyTypes.map((type) => (
@@ -158,15 +164,15 @@ const HouseInsuranceForm = () => {
 
               <TextField
                 fullWidth
-                id="property_size_sq_feet"
-                name="property_size_sq_feet"
+                id="propertysizesqfeet"
+                name="propertysizesqfeet"
                 label="Property Size (sq ft)"
                 type="number"
-                value={values.property_size_sq_feet}
+                value={values.propertysizesqfeet}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.property_size_sq_feet && Boolean(errors.property_size_sq_feet)}
-                helperText={touched.property_size_sq_feet && errors.property_size_sq_feet}
+                error={touched.propertysizesqfeet && Boolean(errors.propertysizesqfeet)}
+                helperText={touched.propertysizesqfeet && errors.propertysizesqfeet}
               />
             </Box>
 
